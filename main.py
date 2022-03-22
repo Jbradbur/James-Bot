@@ -5,6 +5,7 @@ from discord.ext.tasks import loop
 import os
 import random
 import json
+import reddit.py
 
 TOKEN = os.environ['TOKEN']
 
@@ -48,7 +49,11 @@ async def on_message(message):
         await message.channel.send(random.choice(jamesSayings))
     await client.process_commands(message)
 
-
+@client.command()
+async def shitpost(ctx):
+  reddit.redShitPost()
+  
+  
 #Populates the json with the current list of custom emojis formated
 @client.command()
 async def emojis(ctx):
@@ -76,6 +81,7 @@ async def stats(ctx):
 @client.command()
 async def command(ctx):
     print("Commands are working")
+
 
 
 @client.command(pass_context=True)
