@@ -5,7 +5,9 @@ from discord.ext.tasks import loop
 import os
 import random
 import json
-import reddit.py
+import pandas as pd
+from reddit import redShitPost
+
 
 TOKEN = os.environ['TOKEN']
 
@@ -22,7 +24,7 @@ jamesSayings = json.load(open('jamesSayings.json', 'r'))
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
-
+    
 
 @client.event
 async def on_message(message):
@@ -51,8 +53,12 @@ async def on_message(message):
 
 @client.command()
 async def shitpost(ctx):
-  reddit.redShitPost()
-  
+  df = pd.DataFrame()
+  df = redShitPost(df)
+  channel = client.get_channel(201887076977737728)
+  rID = random.randint(0,9)
+  URL = "https://www.reddit.com" + df.at[rID, 'LINK']
+  await channel.send(URL)
   
 #Populates the json with the current list of custom emojis formated
 @client.command()
@@ -64,6 +70,10 @@ async def emojis(ctx):
     with open('emojiList.json', 'w') as f:
         json.dump(emojilist, f)
 
+@client.command()
+async def unleash(ctx):
+  print("James Bot Unleashed")
+  voiceChannelCheck.start(ctx)
 
 @client.command()
 async def stats(ctx):
@@ -75,6 +85,8 @@ async def stats(ctx):
           ctx.guild.region,
           "Emojis: ",
           ctx.guild.emojis,
+          "Channels: ",
+          ctx.channel.id,
           sep="\n")
 
 
@@ -82,8 +94,23 @@ async def stats(ctx):
 async def command(ctx):
     print("Commands are working")
 
-
-
+@loop(minutes=1)
+async def voiceChannelCheck(ctx):
+  voiceChannels = []
+  print("Checking users connected in voice")
+  for channel in ctx.guild.voice_channels:
+    if len(channel.voice_states.keys()) >= 2:
+      voiceChannels.append(channel.id)
+  print("These channels have active users ")
+  for channel in voiceChannels:
+    rNum = random.randint(0, 3)
+    #if rNum == 0: 
+    rChannel = ctx.guild.get_channel(channel)
+    print("Connecting to server")
+    await rChannel.connect()
+    random_voice.start(ctx)
+  print(voiceChannels)
+  
 @client.command(pass_context=True)
 async def join(ctx):
     if (ctx.author.voice):
@@ -114,7 +141,6 @@ async def random_voice(ctx):
     print(rInt)
     if rInt == 0:
         await voiceclip(ctx)
-
 
 @client.command()
 async def hello(ctx):
