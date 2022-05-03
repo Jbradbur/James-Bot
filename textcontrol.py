@@ -2,7 +2,7 @@ from discord.ext.tasks import loop
 import random
 import json
 import pandas as pd
-from reddit import redShitPost
+import reddit
 
 #Load the james quotes from json
 jamesSayings = json.load(open('jamesSayings.json', 'r'))
@@ -30,7 +30,7 @@ async def addemojiy(message, client):
 
 async def shitpost(ctx, client):
   df = pd.DataFrame()
-  df = redShitPost(df)
+  df = reddit.redShitPost(df)
   channel = client.get_channel(201887076977737728)
   rID = random.randint(0,9)
   URL = "https://www.reddit.com" + df.at[rID, 'LINK']
