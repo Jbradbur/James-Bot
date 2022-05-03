@@ -2,6 +2,7 @@ import random
 import json
 import pandas as pd
 import reddit
+import time
 
 #Load the james quotes from json
 jamesSayings = json.load(open('jamesSayings.json', 'r'))
@@ -46,4 +47,5 @@ async def emojis(ctx):
 
 async def commandClean(message):
   if message.content.startswith('$'):
+    time.sleep(5)
     await message.delete()

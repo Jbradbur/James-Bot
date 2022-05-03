@@ -55,7 +55,7 @@ async def leave(ctx):
 @client.command()
 async def shitpost(ctx):
   await textcontrol.shitpost(ctx, client)
-
+  
 @client.command()
 async def emojis(ctx):
   await textcontrol.emojis(ctx)
@@ -69,7 +69,6 @@ async def commands(ctx):
 async def on_message(message):
   if message.author == client.user:
       return
-  await textcontrol.commandClean(message)
   await textcontrol.addemoji(message, client)
 
 @client.event
