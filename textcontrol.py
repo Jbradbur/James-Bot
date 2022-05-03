@@ -1,4 +1,3 @@
-from discord.ext.tasks import loop
 import random
 import json
 import pandas as pd
@@ -24,7 +23,7 @@ async def addemoji(message, client):
         await message.add_reaction(emoji)
 
 #Pulls a random quote from the jamesSayings json
-  if message.content.contains('james'):
+  if 'james' in message.content.lower():
     await message.channel.send(random.choice(jamesSayings))
     await client.process_commands(message)
 
