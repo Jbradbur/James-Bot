@@ -67,8 +67,8 @@ async def commands(ctx):
 #On Events
 @client.event
 async def on_message(message):
-  #if message.author == client.user:
-      #return
+  if message.author == client.user:
+      return
   await textcontrol.commandClean(message)
   await textcontrol.addemoji(message, client)
 
