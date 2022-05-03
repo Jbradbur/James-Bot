@@ -7,7 +7,7 @@ import reddit
 #Load the james quotes from json
 jamesSayings = json.load(open('jamesSayings.json', 'r'))
 
-async def addemojiy(message, client):
+async def addemoji(message, client):
 #Adds reaction to any attachment in text channel, creates random number between 0 and 3 and then it will add 1-3 random emotes if 0 was rolled it wont add one. This uses the array of stored emojis in the json. The json needs to be populated first using the emoji function
   if message.attachments:
     storedemojis = json.load(open('emojiList.json', 'r'))
@@ -24,7 +24,7 @@ async def addemojiy(message, client):
         await message.add_reaction(emoji)
 
 #Pulls a random quote from the jamesSayings json
-  if message.content.startswith('$quote'):
+  if message.content.contains('james'):
     await message.channel.send(random.choice(jamesSayings))
     await client.process_commands(message)
 
@@ -36,7 +36,6 @@ async def shitpost(ctx, client):
   URL = "https://www.reddit.com" + df.at[rID, 'LINK']
   await channel.send(URL)
 
-
 #Populates the json with the current list of custom emojis formated
 async def emojis(ctx):
     emojilist = []
@@ -45,3 +44,7 @@ async def emojis(ctx):
         emojilist.append("<:" + emoji.name + ":" + emojiid + ">")
     with open('emojiList.json', 'w') as f:
         json.dump(emojilist, f)
+
+async def commandClean(message):
+  if message.content.startswith('$'):
+    await message.delete()
