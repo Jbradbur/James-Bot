@@ -2,9 +2,9 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import CommandNotFound
 import os
-
 import voicecontrol
 import textcontrol
+import time
 
 TOKEN = os.environ['TOKEN']
 my_secret = os.environ['TOKEN']
@@ -19,14 +19,17 @@ client = commands.Bot(command_prefix='$')  #, intents=intents)
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
-  
+
 #Voice related Commands
 #Starts checking if channels are populated
 @client.command()
 async def unleash(ctx):
   print("James Bot Unleashed")
   await voicecontrol.voiceChannelCheck.start(ctx)
-
+  time.sleep(5)
+  await voicecontrol.voiceclip(ctx)
+  await leave(ctx)
+  
 #Joins command user's voice channel
 @client.command()
 async def join(ctx):
@@ -62,15 +65,17 @@ async def commands(ctx):
     print("Commands are working")
 
 #On Events
-async def on_message(message, client):
-    if message.author == client.user:
-        return
-    await textcontrol.addemoji(message)
+@client.event
+async def on_message(message):
+  if message.author == client.user:
+      return
+  await textcontrol.commandClean(message)
+  await textcontrol.addemoji(message)
 
 @client.event
 async def on_command_error(ctx, error):
     if isinstance(error, CommandNotFound):
         return
-    raise error
+    raise error    
 
 client.run(os.getenv('TOKEN'))
