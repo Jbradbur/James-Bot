@@ -1,6 +1,5 @@
 import requests
 import os
-import pandas as pd
 
 # note that CLIENT_ID refers to 'personal use script' and SECRET_TOKEN to 'token'
 auth = requests.auth.HTTPBasicAuth(os.environ['REDCLIENT_ID'],
