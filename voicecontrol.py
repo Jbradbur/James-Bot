@@ -1,6 +1,7 @@
 import discord
 import random
 import json
+import time
 from discord.ext.tasks import loop
 
 async def join(ctx):
@@ -43,20 +44,25 @@ async def leave(ctx):
     else:
         await ctx.send("I am not in a voice channel")
 
-@loop(minutes=1)
+@loop(seconds=5)
 async def voiceChannelCheck(ctx):
   voiceChannels = []
   print("Checking users connected in voice")
   for channel in ctx.guild.voice_channels:
-    if len(channel.voice_states.keys()) >= 3:
+    if len(channel.voice_states.keys()) >= 1:
       voiceChannels.append(channel.id)
   print("These channels have active users ")
   for channel in voiceChannels:
-    rNum = random.randint(0, 59)
-    if rNum == 0: 
+    rNum = random.randint(0, 0)
+    if rNum == 0:
+      voiceChannelCheck.stop(ctx)
       rChannel = ctx.guild.get_channel(channel)
-    print("Connecting to server")
-    await rChannel.connect()
-    random_voice.start(ctx)
+      print("Connecting to server")
+      await rChannel.connect()
+      time.sleep(20)
+      await voiceclip(ctx)
+      time.sleep(20)
+      await leave(ctx)
+      voiceChannelCheck.start(ctx)
   print(voiceChannels)
   

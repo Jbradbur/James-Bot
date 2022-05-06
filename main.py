@@ -4,7 +4,6 @@ from discord.ext.commands import CommandNotFound
 import os
 import voicecontrol
 import textcontrol
-import time
 
 TOKEN = os.environ['TOKEN']
 my_secret = os.environ['TOKEN']
@@ -26,9 +25,6 @@ async def on_ready():
 async def unleash(ctx):
   print("James Bot Unleashed")
   await voicecontrol.voiceChannelCheck.start(ctx)
-  time.sleep(5)
-  await voicecontrol.voiceclip(ctx)
-  await leave(ctx)
   
 #Joins command user's voice channel
 @client.command()
