@@ -4,6 +4,9 @@ import pandas as pd
 import reddit
 import os
 import openai
+import discord
+import io
+import aiohttp
 
 #Load the james quotes from json
 jamesSayings = json.load(open('jamesSayings.json', 'r'))
@@ -48,21 +51,27 @@ async def emojis(ctx):
         json.dump(emojilist, f)
 
 
-#If called by command ignores the $dall part, otherwise can be called and use the entire message. DALL-E token can be updated by OpenAI at any time and may need to be updated.
+#If called by command ignores the $dall part, if triggered a different way it will use the entire message. DALL-E token can be updated by OpenAI at any time and may need to be updated.
 async def dall(ctx, message):
-    print("Searching Dall-E")
-    openai.api_key = os.environ['DALL_TOKEN']
-    if ctx.message.content.startswith('$dall '):
-      description = ctx.message.content[6:]
-    else:
-      description = ctx.message.content
-    print('Using description: ' + description)  
-    response = openai.Image.create(
+  print("Searching Dall-E")
+  openai.api_key = os.environ['DALL_TOKEN']
+  if ctx.message.content.startswith('$dall '):
+    description = ctx.message.content[6:]
+  else:
+    description = ctx.message.content
+  print('Using description: ' + description)  
+  response = openai.Image.create(
                                      prompt=description,
                                      n=1,
                                      size="1024x1024"
                                 )
-    image_url = response['data'][0]['url']
-    print('Image found ' + image_url + ' posted to ' +   ctx.message.channel.name)
-    await ctx.message.channel.send(image_url)
-    return
+  image_url = response['data'][0]['url']
+  print('Image found ' + image_url + ' posted to ' +   ctx.message.channel.name)
+
+  async with aiohttp.ClientSession() as session:
+    async with session.get(image_url) as resp:
+      if resp.status != 200:
+        return await ctx.message.channel.send('Could not download file...')
+      data = io.BytesIO(await resp.read())
+      await ctx.message.channel.send(file=discord.File(data, "Dall-E " + description + ".png"))
+      return

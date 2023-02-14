@@ -74,19 +74,25 @@ async def commands(ctx):
      # return
  # await textcontrol.addemoji(message, client)
 
-#@client.event
-#async def on_message(message):
- # ctx = await client.get_context(message)
-  #if message.author.id == "914322058383609947":
-   # await textcontrol.dall(ctx, message)
-  #else:
-   # if message.author.bot != True and message.content.startswith('$'):
-    #  rInt = random.randrange(0, 9)
-     # if rInt == 0:
-      #    await textcontrol.dall(ctx, message)
-    #else: 
-     # return
-  #await client.process_commands(message)
+@client.event
+async def on_message(message):
+  await client.process_commands(message)
+  ctx = await client.get_context(message)
+  if message.author.id == "914322058383609947":
+    print("Searching Dall-E for Zeitgeist Bot")
+    await textcontrol.dall(ctx, message)
+  else:
+    if message.author.bot == True or message.content.startswith('$'):
+      return
+    rInt = random.randrange(0, 9)
+    print("Die rolled for picture generation:")
+    print(rInt)
+    if rInt == 0:
+        print("0 Rolled searching Dall-E")
+        await textcontrol.dall(ctx, message)
+    else: 
+      return
+  
         
 @client.event
 async def on_command_error(ctx, error):
