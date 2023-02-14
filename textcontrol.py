@@ -2,7 +2,8 @@ import random
 import json
 import pandas as pd
 import reddit
-import time
+import os
+import openai
 
 #Load the james quotes from json
 jamesSayings = json.load(open('jamesSayings.json', 'r'))
@@ -22,6 +23,7 @@ async def addemoji(message, client):
     for i in range(1, rNum):
         emoji = random.choice(storedemojis)
         await message.add_reaction(emoji)
+  
 
 #Pulls a random quote from the jamesSayings json
   if 'james' in message.content.lower():
@@ -45,7 +47,22 @@ async def emojis(ctx):
     with open('emojiList.json', 'w') as f:
         json.dump(emojilist, f)
 
-async def commandClean(message):
-  if message.content.startswith('$'):
-    time.sleep(5)
-    await message.delete()
+
+#If called by command ignores the $dall part, otherwise can be called and use the entire message. DALL-E token can be updated by OpenAI at any time and may need to be updated.
+async def dall(ctx, message):
+    print("Searching Dall-E")
+    openai.api_key = os.environ['DALL_TOKEN']
+    if ctx.message.content.startswith('$dall '):
+      description = ctx.message.content[6:]
+    else:
+      description = ctx.message.content
+    print('Using description: ' + description)  
+    response = openai.Image.create(
+                                     prompt=description,
+                                     n=1,
+                                     size="1024x1024"
+                                )
+    image_url = response['data'][0]['url']
+    print('Image found ' + image_url + ' posted to ' +   ctx.message.channel.name)
+    await ctx.message.channel.send(image_url)
+    return

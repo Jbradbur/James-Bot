@@ -20,7 +20,7 @@ res = requests.post('https://www.reddit.com/api/v1/access_token',
                     data=data,
                     headers=headers)
 
-print("Logging into reddit, code:")
+print("Logging into Reddit")
 
 # convert response to JSON and pull access_token value
 REDTOKEN = res.json()['access_token']

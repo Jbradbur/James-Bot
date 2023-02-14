@@ -37,32 +37,36 @@ async def hello(ctx):
 
 async def leave(ctx):
     if (ctx.voice_client):
+        voice_client = ctx.guild.voice_client
         random_voice.stop
+        #voice_client.play(discord.FFmpegPCMAudio(source='Goodbye.wav', executable='ffmpeg'))
         print("Goodbye")
         await ctx.guild.voice_client.disconnect()
-        await ctx.send("Good Bye")
     else:
         await ctx.send("I am not in a voice channel")
 
-@loop(seconds=5)
+@loop(minutes=1)
 async def voiceChannelCheck(ctx):
   voiceChannels = []
   print("Checking users connected in voice")
   for channel in ctx.guild.voice_channels:
-    if len(channel.voice_states.keys()) >= 1:
+    if len(channel.voice_states.keys()) >= 2:
       voiceChannels.append(channel.id)
-  print("These channels have active users ")
+  print("These channels have active users:")
+  print(*voiceChannels, sep = "\n")
   for channel in voiceChannels:
-    rNum = random.randint(0, 0)
+    rNum = random.randint(0, 14)
+    print("Number to join channel:")
+    print(rNum)
     if rNum == 0:
-      voiceChannelCheck.stop(ctx)
+      #voiceChannelCheck.stop()
       rChannel = ctx.guild.get_channel(channel)
       print("Connecting to server")
       await rChannel.connect()
-      time.sleep(20)
+      time.sleep(3)
       await voiceclip(ctx)
-      time.sleep(20)
+      time.sleep(10)
       await leave(ctx)
-      voiceChannelCheck.start(ctx)
-  print(voiceChannels)
+      #voiceChannelCheck.start(ctx)
+  
   

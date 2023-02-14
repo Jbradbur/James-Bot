@@ -4,14 +4,15 @@ from discord.ext.commands import CommandNotFound
 import os
 import voicecontrol
 import textcontrol
+import random
 
 TOKEN = os.environ['TOKEN']
 my_secret = os.environ['TOKEN']
 
-intents = discord.Intents.default()
+intents = discord.Intents.all()
 intents.members = True
 
-client = commands.Bot(command_prefix='$')  #, intents=intents)
+client = commands.Bot(command_prefix='$') #, intents=intents)
 
 #On startup
 #Prints to console that the bot is connected
@@ -37,6 +38,12 @@ async def join(ctx):
 async def clip(ctx):
   await voicecontrol.voiceclip(ctx)
 
+@client.command()
+async def dall(ctx):
+  message = ctx.message
+  print("Dall-E Requested")
+  await textcontrol.dall(ctx, message)
+  
 #Plays hello voice clip
 @client.command()
 async def hello(ctx):
@@ -61,12 +68,26 @@ async def commands(ctx):
     print("Commands are working")
 
 #On Events
-@client.event
-async def on_message(message):
-  if message.author == client.user:
-      return
-  await textcontrol.addemoji(message, client)
+#@client.event
+#async def on_message(message):
+  #if message.author == client.user:
+     # return
+ # await textcontrol.addemoji(message, client)
 
+#@client.event
+#async def on_message(message):
+ # ctx = await client.get_context(message)
+  #if message.author.id == "914322058383609947":
+   # await textcontrol.dall(ctx, message)
+  #else:
+   # if message.author.bot != True and message.content.startswith('$'):
+    #  rInt = random.randrange(0, 9)
+     # if rInt == 0:
+      #    await textcontrol.dall(ctx, message)
+    #else: 
+     # return
+  #await client.process_commands(message)
+        
 @client.event
 async def on_command_error(ctx, error):
     if isinstance(error, CommandNotFound):

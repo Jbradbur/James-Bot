@@ -10,6 +10,7 @@ discord = "^1.7.3"
 PyNaCl = "^1.4.0"
 ffmpeg = "^1.4"
 pandas = "^1.4.1"
+openai = "^0.26.5"
 
 [tool.poetry.dev-dependencies]
 
